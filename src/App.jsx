@@ -41,7 +41,9 @@ import {
 } from 'lucide-react';
 
 /* --- ASSETS --- */
-const PROFILE_IMG = "/ashutosh.jpg";
+// 1. SEPARATE IMAGES FOR HERO AND CONTACT
+const HERO_BG_IMG = "/hero-bg.jpg"; 
+const CONTACT_PROFILE_IMG = "/CONTACT_PROFILE_IMG.jpg";
 
 /* --- DESIGN SYSTEM CONSTANTS --- */
 const COLORS = {
@@ -262,7 +264,7 @@ const BatteryModule = ({ children, className = "" }) => {
           mass: 1 
         } 
       }}
-      viewport={{ once: true, margin: "-5%" }} // Tighter margin to trigger earlier and reduce gaps
+      viewport={{ once: true, margin: "-5%" }}
       className={`relative pl-8 md:pl-12 border-l-2 border-[#FF7A18]/20 ${className}`}
     >
       {/* Connector Node - "Clicks" in */}
@@ -404,14 +406,14 @@ const Hero = () => {
   return (
     <section ref={containerRef} className="relative min-h-screen flex flex-col justify-center px-6 md:px-20 overflow-hidden pt-12 md:pt-20 ml-0 md:ml-12">
       
-      {/* Parallax Background Image */}
+      {/* Parallax Background Image - using HERO_BG_IMG */}
       <motion.div 
         style={{ y, opacity }}
         className="absolute inset-0 z-0"
       >
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${PROFILE_IMG})` }} 
+          style={{ backgroundImage: `url(${HERO_BG_IMG})` }} 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D10] via-[#0B0D10]/90 to-black/60" />
       </motion.div>
@@ -502,18 +504,19 @@ const VennSection = () => {
     offset: ["start start", "end end"]
   });
 
-  const circle1X = useTransform(scrollYProgress, [0, 0.7], ["-35%", "-10%"]); 
-  const circle1Y = useTransform(scrollYProgress, [0, 0.7], ["-35%", "-10%"]);
+  // 3. Venn Diagram Logic: Buffer added. Merge 0-0.4, Text 0.4-0.6, Hold 0.6-1.0
+  const circle1X = useTransform(scrollYProgress, [0, 0.4], ["-35%", "-10%"]); 
+  const circle1Y = useTransform(scrollYProgress, [0, 0.4], ["-35%", "-10%"]);
   
-  const circle2X = useTransform(scrollYProgress, [0, 0.7], ["35%", "10%"]);
-  const circle2Y = useTransform(scrollYProgress, [0, 0.7], ["-35%", "-10%"]);
+  const circle2X = useTransform(scrollYProgress, [0, 0.4], ["35%", "10%"]);
+  const circle2Y = useTransform(scrollYProgress, [0, 0.4], ["-35%", "-10%"]);
   
-  const circle3Y = useTransform(scrollYProgress, [0, 0.7], ["35%", "15%"]);
+  const circle3Y = useTransform(scrollYProgress, [0, 0.4], ["35%", "15%"]);
   
-  const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0.2]); 
+  const opacityText = useTransform(scrollYProgress, [0, 0.2], [1, 0]); 
   
-  const finalOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
-  const finalBlur = useTransform(scrollYProgress, [0.8, 0.95], ["blur(10px)", "blur(0px)"]);
+  const finalOpacity = useTransform(scrollYProgress, [0.4, 0.6], [0, 1]);
+  const finalBlur = useTransform(scrollYProgress, [0.4, 0.6], ["blur(10px)", "blur(0px)"]);
 
   return (
     <section ref={containerRef} className="h-[350vh] relative z-10 bg-[#0B0D10] hidden md:block ml-0 md:ml-12">
@@ -842,6 +845,7 @@ const ProjectsGrid = () => {
   );
 };
 
+/* 2. CAPABILITIES - PAUSE ON HOVER VIA CSS */
 const Capabilities = () => {
   return (
     <section className="py-8 bg-[#0B0D10] relative z-10 border-t border-white/5 overflow-hidden ml-0 md:ml-12">
@@ -852,37 +856,30 @@ const Capabilities = () => {
 
         <div className="flex flex-col gap-10">
             {SCROLL_ROWS.map((rowItems, rowIndex) => (
-            <div key={rowIndex} className="relative w-full overflow-hidden mask-gradient-x">
-                <motion.div
-                className="flex gap-4 md:gap-8 whitespace-nowrap"
-                animate={{ x: rowIndex % 2 === 0 ? ["0%", "-50%"] : ["-50%", "0%"] }}
-                transition={{
-                    duration: 40,
-                    repeat: Infinity,
-                    ease: "linear",
-                    repeatType: "loop"
-                }}
-                style={{ width: "fit-content" }}
+            <div key={rowIndex} className="relative w-full overflow-hidden mask-gradient-x group">
+                <div
+                  className={`flex gap-4 md:gap-8 whitespace-nowrap w-fit ${rowIndex % 2 === 0 ? 'animate-scroll' : 'animate-scroll-reverse'} pause-on-hover`}
                 >
+                    {/* Quadruple duplication for smooth loop */}
                     {[...rowItems, ...rowItems, ...rowItems, ...rowItems].map((skill, index) => (
                     <div 
                         key={index} 
                         className="
                         flex items-center gap-3 px-6 py-4 bg-[#111418] 
-                        border border-white/10 rounded-lg group
+                        border border-white/10 rounded-lg 
                         hover:border-[#FF7A18]/50 hover:bg-[#FF7A18]/5 transition-all
                         min-w-[180px] md:min-w-[220px]
                         "
                     >
-                        <div className="text-[#B0B4BA] group-hover:text-[#FF7A18] transition-colors">
+                        <div className="text-[#B0B4BA] transition-colors">
                         {skill.icon}
                         </div>
-                        <span className="font-mono text-sm font-medium text-white group-hover:text-[#FF7A18] transition-colors">
+                        <span className="font-mono text-sm font-medium text-white transition-colors">
                         {skill.name}
                         </span>
                     </div>
                     ))}
-                </motion.div>
+                </div>
             </div>
             ))}
         </div>
@@ -891,41 +888,42 @@ const Capabilities = () => {
   );
 };
 
+/* 4. CERTIFICATIONS - LOGO PLACEHOLDERS */
 const Certifications = () => {
   const certs = [
     { 
       org: "Aha!", 
-      initials: "AH", 
+      logo: "/logo-aha.jpg", 
       name: "Product Management Professional Certificate", 
       link: "https://www.linkedin.com/learning/certificates/8424e7f74260c9f1ba5deee9c4f87ab7b671c1bd4cd9c8cad65f5544774ca134" 
     },
     { 
       org: "Accenture", 
-      initials: "AC", 
+      logo: "/logo-accenture.jpg",
       name: "PM Job Simulation",
       link: "https://drive.google.com/file/d/1fy-fYIaNSYvXvcog2uyeN1abhj4ohYNL/view"
     },
     { 
       org: "PMI", 
-      initials: "PM", 
+      logo: "/logo-pmi.jpg",
       name: "Technical Product Management",
       link: "https://drive.google.com/file/d/1IG6xX6a0Rv5h1Qa0qHpmB3NcZFlhddUw/view"
     },
     { 
       org: "TATA", 
-      initials: "TA", 
+      logo: "/logo-tata.jpg",
       name: "Data Visualization",
       link: "https://drive.google.com/file/d/1UX3k0p6Yu_nxyV8Gt9wfdxVDVyvFCaQ0/view"
     },
     { 
       org: "KPMG", 
-      initials: "KP", 
+      logo: "/logo-kpmg.jpg",
       name: "Analytics Consulting",
       link: "https://drive.google.com/file/d/1BnSf2bTj-SlYuCiLRBLM_J6LP7FDDMxa/view"
     },
     { 
       org: "GeeksForGeeks", 
-      initials: "GG", 
+      logo: "/logo-gfg.jpg",
       name: "SQL Foundations",
       link: "https://media.geeksforgeeks.org/courses/certificates/fbba4e1e4d793c401352c259921b59b9.pdf"
     }
@@ -949,7 +947,7 @@ const Certifications = () => {
               rel="noopener noreferrer"
               className="
                 min-w-[70vw] md:min-w-0 snap-center
-                relative p-4 border border-white/5 hover:border-white/20 bg-[#111418] transition-all hover:-translate-y-1 group rounded-lg overflow-hidden cursor-pointer block
+                relative p-4 border border-white/5 hover:border-white/20 bg-[#111418] transition-all hover:-translate-y-1 group rounded-lg overflow-hidden cursor-pointer block text-center
               "
             >
               {/* Holographic Scan Animation */}
@@ -965,9 +963,9 @@ const Certifications = () => {
                 className="absolute inset-0 bg-[#FF7A18]/10 z-10 opacity-0 group-hover:opacity-100 transition-opacity" 
               />
 
-              <div className="relative z-0">
-                <div className="w-12 h-12 mb-4 bg-white/5 border border-white/10 flex items-center justify-center font-black text-xl text-[#555] group-hover:text-white group-hover:border-[#FF7A18] group-hover:bg-[#FF7A18] transition-all rounded">
-                    {cert.initials}
+              <div className="relative z-0 flex flex-col items-center">
+                <div className="w-16 h-16 mb-4 rounded-full border-2 border-white/10 overflow-hidden flex items-center justify-center bg-black">
+                    <img src={cert.logo} alt={cert.org} className="w-full h-full object-cover" />
                 </div>
                 <h4 className="font-bold text-white text-sm mb-1">{cert.org}</h4>
                 <p className="text-xs text-[#B0B4BA] font-mono leading-tight">{cert.name}</p>
@@ -991,11 +989,12 @@ const Footer = () => {
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#FF7A18]/5 to-transparent pointer-events-none" />
 
+      {/* 5. Trigger Earlier: margin -10% */}
       <motion.div 
         initial={{ scale: 0.95, opacity: 0, y: 30 }}
         whileInView={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
-        viewport={{ amount: 0.6 }}
+        viewport={{ amount: 0.2, margin: "0px 0px -100px 0px" }} 
         className="w-full max-w-4xl mx-auto px-6 relative z-10"
       >
         <div className={`
@@ -1008,11 +1007,11 @@ const Footer = () => {
             <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#FF7A18] opacity-0 group-hover/footer:opacity-100 transition-opacity duration-300" />
             <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#FF7A18] opacity-0 group-hover/footer:opacity-100 transition-opacity duration-300" />
 
-            {/* Header Content */}
+            {/* Header Content - using CONTACT_PROFILE_IMG */}
             <div className="flex flex-col md:flex-row items-start gap-6 mb-10 mt-4">
                 <div className="relative w-24 h-24 shrink-0 rounded-full border border-white/10 p-1 bg-black/50">
                     <img 
-                        src={PROFILE_IMG} 
+                        src={CONTACT_PROFILE_IMG} 
                         alt="Ashutosh" 
                         className="w-full h-full rounded-full object-cover grayscale group-hover/footer:grayscale-0 transition-all duration-500" 
                     />
@@ -1038,12 +1037,15 @@ const Footer = () => {
             
             {/* Buttons Grid - Creative & Professional */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button className="md:col-span-1 group/btn h-12 bg-[#FF7A18] text-black font-bold text-sm tracking-wide rounded-lg hover:bg-[#FF9A50] transition-colors flex items-center justify-center gap-2 relative overflow-hidden">
+              <a 
+                href="mailto:ashutoshchauhan3203@gmail.com"
+                className="md:col-span-1 group/btn h-12 bg-[#FF7A18] text-black font-bold text-sm tracking-wide rounded-lg hover:bg-[#FF9A50] transition-colors flex items-center justify-center gap-2 relative overflow-hidden"
+              >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 <span className="relative z-10 flex items-center gap-2">
                   <Mail size={16} className="fill-black" /> Let's Connect
                 </span>
-              </button>
+              </a>
               
               <a 
                 href="https://www.linkedin.com/in/ashutoshchauhan-?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BsZvEc7E6TkSiN2tMmAXeeg%3D%3D"
@@ -1054,11 +1056,16 @@ const Footer = () => {
                 <Linkedin size={16} /> LinkedIn
               </a>
 
-              <button className="md:col-span-1 group/btn h-12 border border-white/10 bg-white/5 text-white font-medium text-sm tracking-wide rounded-lg hover:border-[#4ADE80] hover:text-[#4ADE80] hover:bg-[#4ADE80]/10 transition-all flex items-center justify-center gap-2 overflow-hidden relative">
+              <a 
+                href="https://drive.google.com/file/d/1HhhBHAmWPNXSK01EQqaYy7U1yXi7ogO8/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="md:col-span-1 group/btn h-12 border border-white/10 bg-white/5 text-white font-medium text-sm tracking-wide rounded-lg hover:border-[#4ADE80] hover:text-[#4ADE80] hover:bg-[#4ADE80]/10 transition-all flex items-center justify-center gap-2 overflow-hidden relative"
+              >
                 <FileText size={16} /> Access Resume
                 <div className="absolute inset-0 bg-[#4ADE80]/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 <Download size={14} className="opacity-50 group-hover/btn:opacity-100 ml-1" />
-              </button>
+              </a>
             </div>
         </div>
 
@@ -1097,6 +1104,25 @@ export default function App() {
         .writing-vertical {
             writing-mode: vertical-rl;
             text-orientation: mixed;
+        }
+        
+        /* 2. Keyframes for Pause-on-Hover Marquee */
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
+        .animate-scroll {
+          animation: marquee 40s linear infinite;
+        }
+        .animate-scroll-reverse {
+          animation: marquee-reverse 40s linear infinite;
+        }
+        .pause-on-hover:hover {
+          animation-play-state: paused;
         }
       `}</style>
       
