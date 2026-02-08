@@ -893,37 +893,37 @@ const Certifications = () => {
   const certs = [
     { 
       org: "Aha!", 
-      logo: "/logo-aha.jpg", 
+      logo: "/logo-aha.png", 
       name: "Product Management Professional Certificate", 
       link: "https://www.linkedin.com/learning/certificates/8424e7f74260c9f1ba5deee9c4f87ab7b671c1bd4cd9c8cad65f5544774ca134" 
     },
     { 
       org: "Accenture", 
-      logo: "/logo-accenture.jpg",
+      logo: "/logo-accenture.png",
       name: "PM Job Simulation",
       link: "https://drive.google.com/file/d/1fy-fYIaNSYvXvcog2uyeN1abhj4ohYNL/view"
     },
     { 
       org: "PMI", 
-      logo: "/logo-pmi.jpg",
+      logo: "/logo-pmi.png",
       name: "Technical Product Management",
       link: "https://drive.google.com/file/d/1IG6xX6a0Rv5h1Qa0qHpmB3NcZFlhddUw/view"
     },
     { 
       org: "TATA", 
-      logo: "/logo-tata.jpg",
+      logo: "/logo-tata.png",
       name: "Data Visualization",
       link: "https://drive.google.com/file/d/1UX3k0p6Yu_nxyV8Gt9wfdxVDVyvFCaQ0/view"
     },
     { 
       org: "KPMG", 
-      logo: "/logo-kpmg.jpg",
+      logo: "/logo-kpmg.png",
       name: "Analytics Consulting",
       link: "https://drive.google.com/file/d/1BnSf2bTj-SlYuCiLRBLM_J6LP7FDDMxa/view"
     },
     { 
       org: "GeeksForGeeks", 
-      logo: "/logo-gfg.jpg",
+      logo: "/logo-gfg.png",
       name: "SQL Foundations",
       link: "https://media.geeksforgeeks.org/courses/certificates/fbba4e1e4d793c401352c259921b59b9.pdf"
     }
